@@ -84,4 +84,14 @@ defmodule Board do
       available(tail, index)
     end
   end
+
+  def compact(n), do: n == nil
+  def all_available(board) do
+    available_placeholder_index = List.flatten(board)
+    |> Enum.with_index
+    |> Enum.map (fn({x, index}) -> if (x == " ") do index end end)
+
+    available_placeholder_index
+    |> Enum.reject(&compact/1)
+  end
 end

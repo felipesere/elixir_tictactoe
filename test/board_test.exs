@@ -177,6 +177,16 @@ defmodule BoardTest do
    assert Board.available(board) == [2, 1, 0]
  end
 
+ test "all abailable" do
+  board = [
+    [" ", "X", "X"],
+    ["X", " ", "X"],
+    ["X", "X", " "]
+  ]
+
+   assert Board.all_available(board) == [0, 4, 8]
+ end
+
 # test tie
 # return game over if game over
 end

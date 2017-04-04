@@ -1,10 +1,10 @@
 defmodule Board do
   def empty_board do
-    List.to_tuple(create_board())
+    create_board()
   end
 
   defp create_board do
-    Stream.repeatedly(fn -> List.to_tuple(create_row()) end)
+    Stream.repeatedly(fn -> create_row() end)
     |> Enum.take(3)
   end
 
@@ -14,16 +14,15 @@ defmodule Board do
   end
 
   def set_mark(board, mark, position) do
-    row_index = row(board, position)
-    column_index = column(board, position)
+    row_index = round(position / Enum.count(board))
+    column_index = rem(position, Enum.count(board))
 
     updapted_row =
       board
-      |> elem(row_index)
-      |> put_elem(column_index, mark)
+      |> Enum.at(row_index)
+      |> List.replace_at(column_index, mark)
 
-    board
-    |> put_elem(row_index, updapted_row)
+    List.replace_at(board, row_index, updapted_row)
   end
 
   def is_free(board, position) do
@@ -31,20 +30,20 @@ defmodule Board do
     column_index = column(board, position)
 
     board
-    |> elem(row_index)
-    |> elem(column_index) == " "
+    |> Enum.at(row_index)
+    |> Enum.at(column_index) == " "
   end
 
   def row(board, position) do
-    round(position / tuple_size(board))
+    round(position / Enum.count(board))
   end
 
   def column(board, position) do
-    rem(position, tuple_size(board))
+    rem(position, Enum.count(board))
   end
 
   def win(board, mark) do
-    any_turple(Tuple.to_list(board), mark)
+    any_turple(board, mark)
   end
 
   def any_turple(board, mark) do
@@ -53,26 +52,28 @@ defmodule Board do
   end
 
   def all_turple(row, mark) do
-    Tuple.to_list(row)
+    row
     |> Enum.all?(fn(x) -> x == mark end)
   end
 
   def check_columns(board, mark) do
-    any_turple(List.zip(Tuple.to_list(board)), mark)
+    lol = List.zip(board)
+    lol = Enum.map(lol, fn(x) -> Tuple.to_list(x) end)
+    any_turple(lol, mark)
   end
 
   def check_diag_one(board, mark) do
     0..2
-    |> Enum.all?(fn(x) -> board |> elem(x) |> elem(x) == mark end)
+    |> Enum.all?(fn(x) -> board |> Enum.at(x) |> Enum.at(x) == mark end)
   end
 
   def check_diag_two(board, mark) do
     0..2
-    |> Enum.all?(fn(x) -> board |> elem(x) |> elem(tuple_size(board) - 1 - x) == mark end)
+    |> Enum.all?(fn(x) -> board |> Enum.at(x) |> Enum.at(Enum.count(board) - 1 - x) == mark end)
   end
 
   def available(board) do
-    Tuple.to_list(board)
+    board
     |> available(tuple_size(board) - 1)
   end
 

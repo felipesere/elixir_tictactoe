@@ -91,4 +91,8 @@ defmodule Board do
     board |> available_placeholders == []
     && !(win?(board, "X") || win?(board, "O"))
   end
+
+  def over?(board) do
+    tie?(board) || win?(board, "X") || win?(board, "O")
+  end
 end

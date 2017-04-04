@@ -173,6 +173,16 @@ defmodule BoardTest do
    assert Board.available_placeholders(board) == []
  end
 
+ test "returns the only spot left" do
+    board = [
+      ["X", "X", "O"],
+      ["O", "O", " "],
+      ["X", "O", "X"]
+    ]
+
+   assert Board.available_placeholders(board) == [5]
+ end
+
  test "returns true when it's a tie" do
   board = [
     ["O", "X", "O"],
@@ -211,5 +221,45 @@ defmodule BoardTest do
   ]
 
    assert Board.tie?(board) == false
+ end
+
+ test "game is over when tie" do
+  board = [
+    ["O", "X", "O"],
+    ["O", "O", "X"],
+    ["X", "O", "X"]
+  ]
+
+   assert Board.over?(board) == true
+ end
+
+ test "game is over when O win" do
+  board = [
+    ["O", "X", "O"],
+    ["O", "O", "X"],
+    ["O", "X", "X"]
+  ]
+
+   assert Board.over?(board) == true
+ end
+
+ test "game is over when X win" do
+  board = [
+    ["O", "X", "O"],
+    ["O", "O", "X"],
+    ["X", "X", "X"]
+  ]
+
+   assert Board.over?(board) == true
+ end
+
+ test "game is not over when not finished" do
+  board = [
+    ["O", "X", " "],
+    ["O", "O", "X"],
+    ["X", "X", "X"]
+  ]
+
+   assert Board.over?(board) == true
  end
 end

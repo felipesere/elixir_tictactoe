@@ -50,7 +50,7 @@ defmodule BoardTest do
       [" ", " ", " "]
     ]
 
-    assert Board.is_free(board, 0) == true
+    assert Board.is_free?(board, 0) == true
   end
 
   test "returns false if the placeholder isn't free" do
@@ -60,7 +60,7 @@ defmodule BoardTest do
       [" ", " ", " "]
     ]
 
-    assert Board.is_free(board, 4) == false
+    assert Board.is_free?(board, 4) == false
   end
 
   test "returns false when no one win" do
@@ -70,7 +70,7 @@ defmodule BoardTest do
       [" ", " ", " "]
     ]
 
-    assert Board.win(board, "X") == false
+    assert Board.win?(board, "X") == false
   end
 
   test "returns true when first row win" do
@@ -80,7 +80,7 @@ defmodule BoardTest do
       [" ", " ", " "]
     ]
 
-    assert Board.win(board, "X") == true
+    assert Board.win?(board, "X") == true
   end
 
   test "returns true when second row win" do
@@ -90,7 +90,7 @@ defmodule BoardTest do
       [" ", " ", " "]
     ]
 
-    assert Board.win(board, "X") == true
+    assert Board.win?(board, "X") == true
   end
 
   test "returns true when third row win" do
@@ -100,7 +100,7 @@ defmodule BoardTest do
       ["X", "X", "X"]
     ]
 
-    assert Board.win(board, "X") == true
+    assert Board.win?(board, "X") == true
   end
 
   test "returns true when first column win" do
@@ -110,7 +110,7 @@ defmodule BoardTest do
      ["X", " ", " "]
    ]
 
-   assert Board.check_columns(board, "X") == true
+   assert Board.win?(board, "X") == true
   end
 
   test "return true when second column win" do
@@ -120,7 +120,7 @@ defmodule BoardTest do
      [" ", "X", " "]
    ]
 
-   assert Board.check_columns(board, "X") == true
+   assert Board.win?(board, "X") == true
   end
 
   test "return true when third column win" do
@@ -130,7 +130,7 @@ defmodule BoardTest do
      [" ", " ", "X"]
    ]
 
-   assert Board.check_columns(board, "X") == true
+   assert Board.win?(board, "X") == true
   end
 
   test "returns true when win first diag" do
@@ -140,7 +140,7 @@ defmodule BoardTest do
       [" ", " ", "X"]
     ]
 
-    assert Board.check_diag_one(board, "X") == true
+    assert Board.win?(board, "X") == true
   end
 
   test "returns true when win second diag" do
@@ -150,7 +150,7 @@ defmodule BoardTest do
       ["X", " ", " "]
     ]
 
-    assert Board.check_diag_two(board, "X") == true
+    assert Board.win?(board, "X") == true
   end
 
  test "all abailable" do
@@ -160,6 +160,6 @@ defmodule BoardTest do
     ["X", "X", " "]
   ]
 
-   assert Board.all_available(board) == [0, 4, 8]
+   assert Board.available_placeholders(board) == [0, 4, 8]
  end
 end

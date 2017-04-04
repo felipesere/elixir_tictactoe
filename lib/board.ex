@@ -14,85 +14,76 @@ defmodule Board do
   end
 
   def set_mark(board, mark, position) do
-    row_index = round(position / Enum.count(board))
-    column_index = rem(position, Enum.count(board))
-
     updapted_row =
       board
-      |> Enum.at(row_index)
-      |> List.replace_at(column_index, mark)
-
-    List.replace_at(board, row_index, updapted_row)
-  end
-
-  def is_free(board, position) do
-    row_index = row(board, position)
-    column_index = column(board, position)
+      |> Enum.at(row_index(board, position))
+      |> List.replace_at(column_index(board, position), mark)
 
     board
-    |> Enum.at(row_index)
-    |> Enum.at(column_index) == " "
+    |> List.replace_at(row_index(board, position), updapted_row)
   end
 
-  def row(board, position) do
-    round(position / Enum.count(board))
-  end
+  def is_free?(board, position), do: board |> placeholder(position) == " "
 
-  def column(board, position) do
-    rem(position, Enum.count(board))
-  end
-
-  def win(board, mark) do
-    any_turple(board, mark)
-  end
-
-  def any_turple(board, mark) do
+  defp placeholder(board, position) do
     board
-    |> Enum.any?(fn(x) -> all_turple(x, mark) end)
+    |> Enum.at(board |> row_index(position))
+    |> Enum.at(board |> column_index(position))
   end
 
-  def all_turple(row, mark) do
-    row
-    |> Enum.all?(fn(x) -> x == mark end)
+  defp row_index(board, position), do: round(position / (board |> size))
+  defp column_index(board, position), do: rem(position, board |> size)
+
+  def win?(board, mark) do
+    board |> has_winning_row?(mark)
+    || board |> has_winning_column?(mark)
+    || board |> has_winning_diagonal?(mark)
   end
 
-  def check_columns(board, mark) do
-    lol = List.zip(board)
-    lol = Enum.map(lol, fn(x) -> Tuple.to_list(x) end)
-    any_turple(lol, mark)
+  defp has_winning_row?(board, mark) do
+    board |> Enum.any?(fn(x) -> same_mark?(x, mark) end)
   end
 
-  def check_diag_one(board, mark) do
-    0..2
+  defp same_mark?(row, mark) do
+    row |> Enum.all?(fn(x) -> x == mark end)
+  end
+
+  defp has_winning_column?(board, mark) do
+    board |> transpose |> has_winning_row?(mark)
+  end
+
+  defp transpose(board) do
+    board
+    |> List.zip
+    |> Enum.map(fn(x) -> Tuple.to_list(x) end)
+  end
+
+  defp has_winning_diagonal?(board, mark) do
+    board |> winning_diagonal(mark) || board |> winning_revert_diagonal(mark)
+  end
+
+  defp winning_diagonal(board, mark) do
+    0..(board |> size) - 1
     |> Enum.all?(fn(x) -> board |> Enum.at(x) |> Enum.at(x) == mark end)
   end
 
-  def check_diag_two(board, mark) do
-    0..2
+  defp winning_revert_diagonal(board, mark) do
+    0..(board |> size) - 1
     |> Enum.all?(fn(x) -> board |> Enum.at(x) |> Enum.at(Enum.count(board) - 1 - x) == mark end)
   end
 
-  def available(board) do
+  defp size(board), do: Enum.count(board)
+
+  def available_placeholders(board) do
+    board |> available_placeholder_index |> compact
+  end
+
+  defp available_placeholder_index(board) do
     board
-    |> available(tuple_size(board) - 1)
-  end
-
-  def available([], _), do: []
-  def available([head | tail], index) do
-    if head == " " do
-      available(tail, index) ++ [index - Enum.count(tail)]
-    else
-      available(tail, index)
-    end
-  end
-
-  def compact(n), do: n == nil
-  def all_available(board) do
-    available_placeholder_index = List.flatten(board)
+    |> List.flatten
     |> Enum.with_index
     |> Enum.map (fn({x, index}) -> if (x == " ") do index end end)
-
-    available_placeholder_index
-    |> Enum.reject(&compact/1)
   end
+
+  defp compact(list), do: Enum.reject(list, fn(x) -> x == nil end)
 end

@@ -86,4 +86,9 @@ defmodule Board do
   end
 
   defp compact(list), do: Enum.reject(list, fn(x) -> x == nil end)
+
+  def tie?(board) do
+    board |> available_placeholders == []
+    && !(win?(board, "X") || win?(board, "O"))
+  end
 end

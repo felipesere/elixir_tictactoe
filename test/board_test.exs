@@ -162,4 +162,54 @@ defmodule BoardTest do
 
    assert Board.available_placeholders(board) == [0, 4, 8]
  end
+
+ test "retuns empty list when no spot available" do
+  board = [
+    ["O", "X", "X"],
+    ["O", "O", "X"],
+    ["X", "O", "X"]
+  ]
+
+   assert Board.available_placeholders(board) == []
+ end
+
+ test "returns true when it's a tie" do
+  board = [
+    ["O", "X", "O"],
+    ["O", "O", "X"],
+    ["X", "O", "X"]
+  ]
+
+   assert Board.tie?(board) == true
+ end
+
+ test "returns false when board isn't full" do
+  board = [
+    ["O", " ", "X"],
+    ["O", "O", "X"],
+    ["X", "O", "X"]
+  ]
+
+   assert Board.tie?(board) == false
+ end
+
+ test "returns false when board is full but X won" do
+  board = [
+    ["O", "X", "X"],
+    ["O", "O", "X"],
+    ["X", "O", "X"]
+  ]
+
+   assert Board.tie?(board) == false
+ end
+
+ test "returns false when board is full but O won" do
+  board = [
+    ["O", "X", "X"],
+    ["O", "O", "O"],
+    ["X", "O", "X"]
+  ]
+
+   assert Board.tie?(board) == false
+ end
 end

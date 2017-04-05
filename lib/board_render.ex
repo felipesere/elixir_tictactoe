@@ -1,35 +1,15 @@
 defmodule BoardRender do
   def render(board) do
-    render(board, tuple_size(board))
+    board = Enum.chunk(board, 3)
+    build_render(board)
   end
 
-  def render(_, 0), do: ""
-  def render(board, previous_index) do
-    index = previous_index - 1
-    current_line = elem(board, index)
+  def build_render([]), do: ""
+  def build_render([head | tail]), do: line(head) <> build_render(tail)
 
-    render_line(current_line)
-    <> interline(tuple_size(current_line), index)
-    <> render(board, index)
+  def line([]), do: "\n"
+  def line([head | tail]) when tail == [] do
+    " #{head} " <> line(tail)
   end
-
-  def interline(0, _), do: "--\n"
-  def interline(_, 0), do: ""
-  def interline(placeholder_index, line_index) do
-    "---" <> interline(placeholder_index - 1, line_index)
-  end
-
-  def render_line(line), do: render_line(line, tuple_size(line))
-
-  def render_line(line, 0), do: "\n"
-  def render_line(line, placeholder_index) do
-    last_placeholder = placeholder_index == 1
-    mark_placeholder = " " <> elem(line, placeholder_index - 1) <> " "
-
-    if !last_placeholder do
-      mark_placeholder <> "|" <> render_line(line, placeholder_index - 1)
-    else
-      mark_placeholder <> render_line(line, placeholder_index - 1)
-    end
-  end
+  def line([head | tail]), do: " #{head} |" <> line(tail)
 end

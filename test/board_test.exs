@@ -2,280 +2,137 @@ defmodule BoardTest do
   use ExUnit.Case
 
   test "returns an empty board by default" do
-    empty_board = [
-      [" ", " ", " "],
-      [" ", " ", " "],
-      [" ", " ", " "]
-    ]
+    empty_board = [0,1,2,3,4,5,6,7,8]
 
     assert Board.empty_board == empty_board
   end
 
   test "returns a board with a mark" do
-    board = [
-      [" ", " ", " "],
-      [" ", " ", " "],
-      [" ", " ", " "]
-    ]
+    board = Board.empty_board
 
-    marked_board = [
-      [" ", " ", " "],
-      [" ", "X", " "],
-      [" ", " ", " "]
-    ]
+    marked_board = [0, 1, 2, 3, :x, 5, 6, 7, 8]
 
-    assert Board.set_mark(board, "X", 4) == marked_board
+    assert Board.set_mark(board, :x, 4) == marked_board
   end
 
-  @tag :wip
-  test "return a board with new mark spot five" do
-    marked_board = [
-      ["X", "X", "O"],
-      [" ", "O", "O"],
-      ["X", "O", "X"]
-    ]
+  test "returns true if the place is free" do
+    board = Board.empty_board
 
-    board = [
-      ["X", "X", "O"],
-      [" ", "O", " "],
-      ["X", "O", "X"]
-    ]
-    assert Board.set_mark(board, "O", 5) == marked_board
+    assert Board.is_free?(board, 0)
   end
 
-  test "returns board with mark changed" do
-    board = [
-      [" ", " ", " "],
-      [" ", "X", " "],
-      [" ", " ", " "]
-    ]
-
-    marked_board = [
-      [" ", " ", " "],
-      [" ", "O", " "],
-      [" ", " ", " "]
-    ]
-
-    assert Board.set_mark(board, "O", 4) == marked_board
-  end
-
-  test "returns true if the placeholder is free" do
-    board = [
-      [" ", " ", " "],
-      [" ", "O", " "],
-      [" ", " ", " "]
-    ]
-
-    assert Board.is_free?(board, 0) == true
-  end
-
-  test "returns false if the placeholder isn't free" do
-    board = [
-      [" ", " ", " "],
-      [" ", "O", " "],
-      [" ", " ", " "]
-    ]
+  test "returns false if the place isn't free" do
+    empty = Board.empty_board
+    board = Board.set_mark(empty, :x, 4)
 
     assert Board.is_free?(board, 4) == false
   end
 
   test "returns false when no one win" do
-    board = [
-      [" ", " ", " "],
-      [" ", " ", " "],
-      [" ", " ", " "]
-    ]
+    empty = Board.empty_board
 
-    assert Board.win?(board, "X") == false
+    assert Board.win?(empty, :x) == false
   end
 
   test "returns true when first row win" do
-    board = [
-      ["X", "X", "X"],
-      [" ", " ", " "],
-      [" ", " ", " "]
-    ]
+    board = [:x,:x,:x,3,4,5,6,7,8]
 
-    assert Board.win?(board, "X") == true
+    assert Board.win?(board, :x)
   end
 
   test "returns true when second row win" do
-    board = [
-      [" ", " ", " "],
-      ["X", "X", "X"],
-      [" ", " ", " "]
-    ]
+    board = [0,1,2,:x,:x,:x,6,7,8]
 
-    assert Board.win?(board, "X") == true
+    assert Board.win?(board, :x)
   end
 
   test "returns true when third row win" do
-    board = [
-      [" ", " ", " "],
-      [" ", " ", " "],
-      ["X", "X", "X"]
-    ]
+    board = [0,1,2,3,4,5,:x,:x,:x]
 
-    assert Board.win?(board, "X") == true
+    assert Board.win?(board, :x)
   end
 
   test "returns true when first column win" do
-   board = [
-     ["X", " ", " "],
-     ["X", " ", " "],
-     ["X", " ", " "]
-   ]
+    board = [:x,1,2,:x,4,5,:x,7,8]
 
-   assert Board.win?(board, "X") == true
+    assert Board.win?(board, :x)
   end
 
   test "return true when second column win" do
-   board = [
-     [" ", "X", " "],
-     [" ", "X", " "],
-     [" ", "X", " "]
-   ]
+    board = [0,:x,2,3,:x,5,6,:x,8]
 
-   assert Board.win?(board, "X") == true
+    assert Board.win?(board, :x)
   end
 
   test "return true when third column win" do
-   board = [
-     [" ", " ", "X"],
-     [" ", " ", "X"],
-     [" ", " ", "X"]
-   ]
+    board = [0,1,:x,3,4,:x,6,7,:x]
 
-   assert Board.win?(board, "X") == true
+    assert Board.win?(board, :x)
+  end
+
+  test "checks its the correct winner" do
+    board = [0,1,:x,3,4,:x,6,7,:x]
+
+    assert Board.win?(board, :o) == false
   end
 
   test "returns true when win first diag" do
-    board = [
-      ["X", " ", " "],
-      [" ", "X", " "],
-      [" ", " ", "X"]
-    ]
+    board = [:x,1,2,3,:x,5,6,7,:x]
 
-    assert Board.win?(board, "X") == true
+    assert Board.win?(board, :x)
   end
 
   test "returns true when win second diag" do
-    board = [
-      [" ", " ", "X"],
-      [" ", "X", " "],
-      ["X", " ", " "]
-    ]
+    board = [0,1,:x,3,:x,5,:x,7,8]
 
-    assert Board.win?(board, "X") == true
+    assert Board.win?(board, :x)
   end
 
- test "all abailable" do
-  board = [
-    [" ", "X", "X"],
-    ["X", " ", "X"],
-    ["X", "X", " "]
-  ]
+  test "retuns empty list when no spot available" do
+    board = [:x,:x,:x,:x,:x,:x,:x,:x,:x]
 
-   assert Board.available_placeholders(board) == [0, 4, 8]
- end
+    assert Board.available_placeholders(board) == []
+  end
 
- test "retuns empty list when no spot available" do
-  board = [
-    ["O", "X", "X"],
-    ["O", "O", "X"],
-    ["X", "O", "X"]
-  ]
+  test "returns the only spot left" do
+    board = [:x,:x,:x,:x,:x,5,:x,:x,:x]
 
-   assert Board.available_placeholders(board) == []
- end
+    assert Board.available_placeholders(board) == [5]
+  end
 
- test "returns the only spot left" do
+  test "returns true when it's a tie" do
     board = [
-      ["X", "X", "O"],
-      ["O", "O", " "],
-      ["X", "O", "X"]
-    ]
+      :o, :x, :o,
+      :o, :o, :x,
+      :x, :o, :x]
 
-   assert Board.available_placeholders(board) == [5]
- end
+    assert Board.tie?(board)
+  end
 
- test "returns true when it's a tie" do
-  board = [
-    ["O", "X", "O"],
-    ["O", "O", "X"],
-    ["X", "O", "X"]
-  ]
+  test "returns false when board isn't full" do
+   board = [
+     :o,  1, :x,
+     :o, :o, :x,
+     :x, :o, :x]
 
-   assert Board.tie?(board) == true
- end
+    assert Board.tie?(board) == false
+  end
 
- test "returns false when board isn't full" do
-  board = [
-    ["O", " ", "X"],
-    ["O", "O", "X"],
-    ["X", "O", "X"]
-  ]
+  test "returns false when board is full but X won" do
+    board = [
+      :o, :x, :x,
+      :o, :o, :x,
+      :x, :o, :x]
 
-   assert Board.tie?(board) == false
- end
+    assert Board.tie?(board) == false
+  end
 
- test "returns false when board is full but X won" do
-  board = [
-    ["O", "X", "X"],
-    ["O", "O", "X"],
-    ["X", "O", "X"]
-  ]
+  test "returns false when board is full but O won" do
+    board = [
+      :o, :x, :x,
+      :o, :o, :o,
+      :x, :o, :x]
 
-   assert Board.tie?(board) == false
- end
-
- test "returns false when board is full but O won" do
-  board = [
-    ["O", "X", "X"],
-    ["O", "O", "O"],
-    ["X", "O", "X"]
-  ]
-
-   assert Board.tie?(board) == false
- end
-
- test "game is over when tie" do
-  board = [
-    ["O", "X", "O"],
-    ["O", "O", "X"],
-    ["X", "O", "X"]
-  ]
-
-   assert Board.over?(board) == true
- end
-
- test "game is over when O win" do
-  board = [
-    ["O", "X", "O"],
-    ["O", "O", "X"],
-    ["O", "X", "X"]
-  ]
-
-   assert Board.over?(board) == true
- end
-
- test "game is over when X win" do
-  board = [
-    ["O", "X", "O"],
-    ["O", "O", "X"],
-    ["X", "X", "X"]
-  ]
-
-   assert Board.over?(board) == true
- end
-
- test "game is not over when not finished" do
-  board = [
-    ["O", "X", " "],
-    ["O", "O", "X"],
-    ["X", "X", "X"]
-  ]
-
-   assert Board.over?(board) == true
- end
+    assert Board.tie?(board) == false
+  end
 end

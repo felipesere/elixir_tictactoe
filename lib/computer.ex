@@ -1,6 +1,6 @@
 defmodule Computer do
-  def other_mark("X"), do: "O"
-  def other_mark("O"), do: "X"
+  def other_mark(:x), do: :o
+  def other_mark(:o), do: :x
 
   def minimax(board, mark) do
     minimax(board, mark, false)
@@ -25,41 +25,25 @@ defmodule Computer do
 
   def maximizing_player(board, mark) do
     spots = board |> Board.available_placeholders
-    best_value = spots |> Enum.map(
+    all_values = spots |> Enum.map(
       fn(x) ->
         new_board = Board.set_mark(board, mark, x)
         minimax(new_board, mark, false)
       end
     )
 
-    Enum.max(best_value)
+    Enum.max(all_values)
   end
 
   def minimizing_player(board, mark) do
     spots = board |> Board.available_placeholders
-    best_value = spots |> Enum.map(
+    all_values = spots |> Enum.map(
       fn(x) ->
         new_board = Board.set_mark(board, other_mark(mark), x)
         minimax(new_board, mark, true)
       end
     )
 
-    Enum.min(best_value)
-  end
-
-  def maxy(value_one, value_two) do
-    if (value_one > value_two) do
-      value_one
-    else
-      value_two
-    end
-  end
-
-  def miny(value_one, value_two) do
-    if (value_one > value_two) do
-      value_two
-    else
-      value_one
-    end
+    Enum.min(all_values)
   end
 end

@@ -1,55 +1,47 @@
 defmodule Board do
   def empty_board do
-    create_board()
-  end
-
-  defp create_board do
-    Stream.repeatedly(fn -> create_row() end)
-    |> Enum.take(3)
-  end
-
-  defp create_row do
-    Stream.repeatedly(fn -> " " end)
-    |> Enum.take(3)
+    [0,1,2,3,4,5,6,7,8]
   end
 
   def set_mark(board, mark, position) do
-    updapted_row =
-      board
-      |> Enum.at(row_index(board, position))
-      |> List.replace_at(column_index(board, position), mark)
-
-    board
-    |> List.replace_at(row_index(board, position), updapted_row)
+    List.replace_at(board, position, mark)
   end
 
-  def is_free?(board, position), do: board |> placeholder(position) == " "
+  def is_free?(board, position), do: Enum.at(board, position) |> is_number?
 
-  defp placeholder(board, position) do
-    board
-    |> Enum.at(board |> row_index(position))
-    |> Enum.at(board |> column_index(position))
+  defp is_number?(number) when is_integer(number), do: true
+  defp is_number?(_), do: false
+
+  def tie?(board) do
+    Enum.all?(board, fn(x) -> !is_number?(x) end)
+    && !(win?(board, :x) || win?(board, :o))
   end
-
-  defp row_index(board, position), do: Integer.floor_div(position, (board |> size))
-  defp column_index(board, position), do: rem(position, board |> size)
 
   def win?(board, mark) do
-    has_winning_row?(board, mark) 
-      || has_winning_column?(board, mark) 
-      || has_winning_diagonal?(board, mark)
+    lines = rows(board) ++ colums(board) ++ diagonals(board)
+
+     lines
+     |> Enum.find(fn(x) -> has_winner?(x) end)
+     |> compare_winner(mark)
   end
 
-  defp has_winning_row?(board, mark) do
-    board |> Enum.any?(fn(x) -> same_mark?(x, mark) end)
+  defp has_winner?([x, x, x]), do: true
+  defp has_winner?(_), do: false
+
+  defp compare_winner(nil, _), do: false
+  defp compare_winner([winner | _], mark), do: winner == mark
+
+  def rows(board) do
+    Enum.chunk(board, 3)
   end
 
-  defp same_mark?(row, mark) do
-    row |> Enum.all?(fn(x) -> x == mark end)
+  def colums(board) do
+    board |> rows |> transpose
   end
 
-  defp has_winning_column?(board, mark) do
-    board |> transpose |> has_winning_row?(mark)
+  def diagonals(board) do
+    [[Enum.at(board, 0), Enum.at(board, 4), Enum.at(board, 8)],
+    [Enum.at(board, 2), Enum.at(board, 4), Enum.at(board, 6)]]
   end
 
   defp transpose(board) do
@@ -58,41 +50,7 @@ defmodule Board do
     |> Enum.map(fn(x) -> Tuple.to_list(x) end)
   end
 
-  defp has_winning_diagonal?(board, mark) do
-    board |> winning_diagonal(mark) || board |> winning_revert_diagonal(mark)
-  end
-
-  defp winning_diagonal(board, mark) do
-    0..(board |> size) - 1
-    |> Enum.all?(fn(x) -> board |> Enum.at(x) |> Enum.at(x) == mark end)
-  end
-
-  defp winning_revert_diagonal(board, mark) do
-    0..(board |> size) - 1
-    |> Enum.all?(fn(x) -> board |> Enum.at(x) |> Enum.at(Enum.count(board) - 1 - x) == mark end)
-  end
-
-  defp size(board), do: Enum.count(board)
-
   def available_placeholders(board) do
-    board |> available_placeholder_index |> compact
-  end
-
-  defp available_placeholder_index(board) do
-    board
-    |> List.flatten
-    |> Enum.with_index
-    |> Enum.map(fn({x, index}) -> if (x == " ") do index end end)
-  end
-
-  defp compact(list), do: Enum.reject(list, fn(x) -> x == nil end)
-
-  def tie?(board) do
-    board |> available_placeholders == []
-    && !(win?(board, "X") || win?(board, "O"))
-  end
-
-  def over?(board) do
-    tie?(board) || win?(board, "X") || win?(board, "O")
+    Enum.filter(board, fn(x) -> is_number?(x) end)
   end
 end

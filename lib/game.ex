@@ -12,16 +12,15 @@ defmodule Game do
   end
 
   def keep_playing(board, mark, players) do
-
-    # Human player implemenation
-    #{position, _} = Integer.parse(IO.gets "play")
-    position = Computer.move(board, mark)
+    current_player = Enum.at(players, 0)
+    position = current_player.move(board, mark)
     board = Board.set_mark(board, mark, position)
 
     IO.puts BoardRender.render(board)
-    play(board, switch(mark), Enum.reverse(players))
+    play(board, switch(mark), next(players))
   end
 
   def switch(:x), do: :o
   def switch(:o), do: :x
+  def next(players), do: Enum.reverse(players)
 end

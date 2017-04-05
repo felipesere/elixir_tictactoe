@@ -1,46 +1,55 @@
 defmodule Computer do
-  def other_mark(:x), do: :o
-  def other_mark(:o), do: :x
+  defp other_mark(:x), do: :o
+  defp other_mark(:o), do: :x
 
-  def minimax(board, mark) do
-    minimax(board, mark, false)
+  def move(board, mark) do
+    board
+    |> Board.available_placeholders
+    |> Enum.map(fn(x) ->
+      {x, minimax(Board.set_mark(board, mark, x), mark, false, 9)} end)
+    |> Enum.max_by(fn(x) -> elem(x, 1) end)
+    |> elem(0)
   end
 
-  def minimax(board, mark, computer) do
+  defp minimax(board, mark) do
+    minimax(board, mark, false, 9)
+  end
+
+  defp minimax(board, mark, computer, depth) do
     cond do
       board |> Board.win?(mark) ->
-        1
+        depth
       board |> Board.win?(other_mark(mark)) ->
-        - 1
+        -depth
       board |> Board.tie? ->
         0
       true ->
         if computer do
-          maximizing_player(board, mark)
+          maximizing_player(board, mark, depth)
         else
-          minimizing_player(board, mark)
+          minimizing_player(board, mark, depth)
         end
     end
   end
 
-  def maximizing_player(board, mark) do
+  defp maximizing_player(board, mark, depth) do
     spots = board |> Board.available_placeholders
     all_values = spots |> Enum.map(
       fn(x) ->
         new_board = Board.set_mark(board, mark, x)
-        minimax(new_board, mark, false)
+        minimax(new_board, mark, false, depth - 1)
       end
     )
 
     Enum.max(all_values)
   end
 
-  def minimizing_player(board, mark) do
+  defp minimizing_player(board, mark, depth) do
     spots = board |> Board.available_placeholders
     all_values = spots |> Enum.map(
       fn(x) ->
         new_board = Board.set_mark(board, other_mark(mark), x)
-        minimax(new_board, mark, true)
+        minimax(new_board, mark, true, depth - 1)
       end
     )
 

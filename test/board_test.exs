@@ -27,6 +27,22 @@ defmodule BoardTest do
     assert Board.set_mark(board, "X", 4) == marked_board
   end
 
+  @tag :wip
+  test "return a board with new mark spot five" do
+    marked_board = [
+      ["X", "X", "O"],
+      [" ", "O", "O"],
+      ["X", "O", "X"]
+    ]
+
+    board = [
+      ["X", "X", "O"],
+      [" ", "O", " "],
+      ["X", "O", "X"]
+    ]
+    assert Board.set_mark(board, "O", 5) == marked_board
+  end
+
   test "returns board with mark changed" do
     board = [
       [" ", " ", " "],

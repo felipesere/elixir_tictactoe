@@ -31,13 +31,13 @@ defmodule Board do
     |> Enum.at(board |> column_index(position))
   end
 
-  defp row_index(board, position), do: round(position / (board |> size))
+  defp row_index(board, position), do: Integer.floor_div(position, (board |> size))
   defp column_index(board, position), do: rem(position, board |> size)
 
   def win?(board, mark) do
-    board |> has_winning_row?(mark)
-    || board |> has_winning_column?(mark)
-    || board |> has_winning_diagonal?(mark)
+    has_winning_row?(board, mark) 
+      || has_winning_column?(board, mark) 
+      || has_winning_diagonal?(board, mark)
   end
 
   defp has_winning_row?(board, mark) do
@@ -82,7 +82,7 @@ defmodule Board do
     board
     |> List.flatten
     |> Enum.with_index
-    |> Enum.map (fn({x, index}) -> if (x == " ") do index end end)
+    |> Enum.map(fn({x, index}) -> if (x == " ") do index end end)
   end
 
   defp compact(list), do: Enum.reject(list, fn(x) -> x == nil end)

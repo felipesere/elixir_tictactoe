@@ -17,12 +17,9 @@ defmodule Computer do
 
   defp minimax(board, mark, computer, depth) do
     cond do
-      board |> Board.win?(mark) ->
-        depth
-      board |> Board.win?(other_mark(mark)) ->
-        -depth
-      board |> Board.tie? ->
-        0
+      Board.win?(board, mark) -> depth
+      Board.win?(board, other_mark(mark)) -> -depth
+      Board.tie?(board) -> 0
       true ->
         if computer do
           maximizing_player(board, mark, depth)

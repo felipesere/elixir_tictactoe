@@ -25,23 +25,12 @@ defmodule Board do
      |> compare_winner(mark)
   end
 
-  defp has_winner?([x, x, x]), do: true
-  defp has_winner?(_), do: false
-
-  defp compare_winner(nil, _), do: false
-  defp compare_winner([winner | _], mark), do: winner == mark
-
-  def rows(board) do
+  defp rows(board) do
     Enum.chunk(board, 3)
   end
 
-  def colums(board) do
+  defp colums(board) do
     board |> rows |> transpose
-  end
-
-  def diagonals(board) do
-    [[Enum.at(board, 0), Enum.at(board, 4), Enum.at(board, 8)],
-    [Enum.at(board, 2), Enum.at(board, 4), Enum.at(board, 6)]]
   end
 
   defp transpose(board) do
@@ -49,6 +38,17 @@ defmodule Board do
     |> List.zip
     |> Enum.map(fn(x) -> Tuple.to_list(x) end)
   end
+
+  defp diagonals(board) do
+    [[Enum.at(board, 0), Enum.at(board, 4), Enum.at(board, 8)],
+    [Enum.at(board, 2), Enum.at(board, 4), Enum.at(board, 6)]]
+  end
+
+  defp has_winner?([x, x, x]), do: true
+  defp has_winner?(_), do: false
+
+  defp compare_winner(nil, _), do: false
+  defp compare_winner([winner | _], mark), do: winner == mark
 
   def available_placeholders(board) do
     Enum.filter(board, fn(x) -> is_number?(x) end)

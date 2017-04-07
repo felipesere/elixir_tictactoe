@@ -1,4 +1,9 @@
 defmodule Game do
+  def start(board, mark, players) do
+    IO.puts BoardRender.render(board)
+    play(board, mark, players)
+  end
+
   def play(board, mark, players) do
     cond do
       Board.tie?(board) -> IO.puts "it's a tie"

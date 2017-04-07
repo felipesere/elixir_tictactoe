@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/fabientownsend/elixir_tictactoe.svg?branch=master)](https://travis-ci.org/fabientownsend/elixir_tictactoe)
 # Tictactoe
 
 ## Build scrip

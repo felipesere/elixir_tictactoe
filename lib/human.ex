@@ -1,8 +1,9 @@
 defmodule Human do
   def move(board, mark) do
-    read_input(mark)
+    mark
+    |> read_input
     |> extract_move
-    |> execute_move(board, mark)
+    |> validate_move(board, mark)
   end
 
   defp read_input(mark) do
@@ -16,24 +17,18 @@ defmodule Human do
     end
   end
 
-  defp execute_move(result, board, mark) do
-    case result do
-      :bad_parse -> request_valid_move(board, mark)
-      position -> play_move(board, position, mark)
+  defp validate_move(:bad_parse, board, mark), do: request_valid_move(board, mark)
+  defp validate_move(position, board, mark) do
+    if Board.is_free?(board, position) do
+      position
+    else
+      request_free_position(board, mark)
     end
   end
 
   defp request_valid_move(board, mark) do
      IO.puts "You move must be an integer"
      move(board, mark)
-  end
-
-  defp play_move(board, position, mark) do
-    if Board.is_free?(board, position) do
-      position
-    else
-      request_free_position(board, mark)
-    end
   end
 
   defp request_free_position(board, mark) do

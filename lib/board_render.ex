@@ -7,9 +7,6 @@ defmodule BoardRender do
   def build_render([]), do: ""
   def build_render([head | tail]), do: line(head) <> build_render(tail)
 
-  def line([]), do: "\n"
-  def line([head | tail]) when tail == [] do
-    " #{head} " <> line(tail)
-  end
+  def line([head]), do: " #{head} \n"
   def line([head | tail]), do: " #{head} |" <> line(tail)
 end

@@ -11,10 +11,6 @@ defmodule Computer do
     |> elem(0)
   end
 
-  defp minimax(board, mark) do
-    minimax(board, mark, false, 9)
-  end
-
   defp minimax(board, mark, computer, depth) do
     cond do
       Board.win?(board, mark) -> depth

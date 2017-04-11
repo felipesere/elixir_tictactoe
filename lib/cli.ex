@@ -16,6 +16,5 @@ defmodule Cli do
   defp validate_integer(:bad_parse) do
     get_integer("The value must be an integer")
   end
-
   defp validate_integer(move), do: move
 end

@@ -8,8 +8,13 @@ defmodule Menu do
 
   defp menu_size, do: Enum.count(game_types()) - 1
 
+  defp description({game_type_description, _}), do: game_type_description
+
   defp display_game_types do
-    IO.puts Enum.map(game_types(), fn({game_type, _}) -> game_type <> "\n" end)
+    game_types()
+    |> Enum.map(&description/1)
+    |> Enum.join("\n")
+    |> IO.puts
   end
 
   defp game_types do

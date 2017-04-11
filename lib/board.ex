@@ -1,7 +1,7 @@
 defmodule Board do
-  def empty_board do
-    [0,1,2,3,4,5,6,7,8]
-  end
+  def empty_board, do: empty_board(3)
+  def empty_board(size), do: Enum.to_list 0..total_spots(size)
+  defp total_spots(size), do: size * size - 1
 
   def set_mark(board, mark, position) do
     List.replace_at(board, position, mark)

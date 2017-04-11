@@ -7,6 +7,16 @@ defmodule BoardTest do
     assert Board.empty_board == empty_board
   end
 
+  test "returns 4x4 board" do
+    empty_board = [
+       0, 1, 2, 3,
+       4, 5, 6, 7,
+       8, 9,10,11,
+      12,13,14,15]
+
+    assert Board.empty_board(4) == empty_board
+  end
+
   test "returns a board with a mark" do
     board = Board.empty_board
 

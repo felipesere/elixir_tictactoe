@@ -1,23 +1,10 @@
 defmodule Human do
   def move(board, mark) do
     mark
-    |> read_input
-    |> extract_move
+    |> Cli.get_integer
     |> validate_move(board, mark)
   end
 
-  defp read_input(mark) do
-    String.trim(IO.gets "Your move #{mark}: ")
-  end
-
-  defp extract_move(input) do
-    case Integer.parse(input) do
-      {position, ""} -> position
-      _ -> :bad_parse
-    end
-  end
-
-  defp validate_move(:bad_parse, board, mark), do: request_valid_move(board, mark)
   defp validate_move(position, board, mark) do
     if Board.is_free?(board, position) do
       position

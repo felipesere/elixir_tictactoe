@@ -5,10 +5,10 @@ defmodule MenuTest do
   test "the menu display the different game types" do
     menu = capture_io([input: "0\n"], fn -> assert Menu.select_game_type end)
 
-      menu  == "0 - human vs human\n"
-            <> "1 - human vs computer\n"
-            <> "2 - computer vs human\n"
-            <> "3 - computer vs computer\n"
+    assert menu  == "0 - human vs human\n"
+                 <> "1 - human vs computer\n"
+                 <> "2 - computer vs human\n"
+                 <> "3 - computer vs computer\n"
   end
 
   test "returns the game that you selected" do

@@ -1,7 +1,8 @@
 defmodule Cli do
   def get_integer, do: get_integer("")
   def get_integer(request) do
-    String.trim(IO.gets request)
+    IO.gets(request)
+    |> String.trim
     |> extract_integer
     |> validate_integer
   end

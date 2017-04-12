@@ -1,5 +1,5 @@
 defmodule Game do
-  def start(board, mark, players) do
+  def start(players, board, mark) do
     IO.puts BoardRender.render(board)
     play(board, mark, players)
   end

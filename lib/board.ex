@@ -25,9 +25,19 @@ defmodule Board do
      |> compare_winner(mark)
   end
 
-  defp rows(board) do
-    Enum.chunk(board, 3)
+  defp has_winner?(line) do
+    mark = Enum.at(line, 0)
+    Enum.all?(line, fn(x) -> x == mark end)
   end
+
+  def rows(board), do: Enum.chunk(board, size(board))
+
+  defp size(board), do: quick_sqr(Enum.count(board))
+  defp quick_sqr(value), do: quick_sqr(value, 1)
+  defp quick_sqr(value, index) when value == index * index do
+    index
+  end
+  defp quick_sqr(value, index), do: quick_sqr(value, index + 1)
 
   defp colums(board) do
     board |> rows |> transpose
@@ -40,12 +50,34 @@ defmodule Board do
   end
 
   defp diagonals(board) do
-    [[Enum.at(board, 0), Enum.at(board, 4), Enum.at(board, 8)],
-    [Enum.at(board, 2), Enum.at(board, 4), Enum.at(board, 6)]]
+    [diagonal_elements(board), reverse_diagonal_elements(board)]
   end
 
-  defp has_winner?([x, x, x]), do: true
-  defp has_winner?(_), do: false
+  def diagonal_elements(board) do
+    board
+    |> diagonal_indexes
+    |> index_value(board)
+  end
+
+  def diagonal_indexes(board) do
+    gap = size(board) + 1
+    Enum.map(0..size(board) - 1, fn(x) -> x * gap end)
+  end
+
+  def reverse_diagonal_elements(board) do
+    board
+    |> reverse_diagonal_indexes
+    |> index_value(board)
+  end
+
+  def reverse_diagonal_indexes(board) do
+    gap = size(board) - 1
+    Enum.map(1..size(board), fn(x) -> x * gap end)
+  end
+
+  def index_value(indexes, board) do
+    Enum.map(indexes, fn(index) -> Enum.at(board, index) end)
+  end
 
   defp compare_winner(nil, _), do: false
   defp compare_winner([winner | _], mark), do: winner == mark
